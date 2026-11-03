@@ -60,6 +60,16 @@ def test_reset_keeps_labels_and_ledger(db, settings):
         assert len(EvalRepo(s).labels_with_current_items()) == 1  # relinked by content hash
 
 
+def test_ids_are_not_reused_after_reset(db, settings):
+    """A worker holding an old item id must never write onto a new item."""
+    old_ids = ingest(db, settings, raws(3)).item_ids
+    reset_processed_data(db)
+    new_ids = ingest(db, settings, raws(3)).item_ids
+    assert min(new_ids) > max(old_ids)
+    with db.read() as s:
+        assert ItemRepo(s).get(old_ids[0]) is None
+
+
 def test_eval_sample_and_report(ctx, settings, tmp_path):
     ingest(ctx.db, settings, JsonlConnector().read(SAMPLE))
     assert drain(ctx, concurrency=2, timeout_s=300)

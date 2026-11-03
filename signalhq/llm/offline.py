@@ -136,7 +136,7 @@ def heuristic_theme_name(quotes: list[str], areas: list[str]) -> dict[str, str]:
             surface.setdefault(s, Counter())[w] += 1
             stems.append(s)
         doc_words.update(set(stems))
-        doc_bigrams.update(set(zip(stems, stems[1:])))
+        doc_bigrams.update(set(zip(stems, stems[1:], strict=False)))
 
     def show(stem: str) -> str:
         return surface[stem].most_common(1)[0][0]

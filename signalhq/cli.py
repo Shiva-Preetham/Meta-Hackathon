@@ -210,14 +210,14 @@ def cmd_replay(args: argparse.Namespace) -> int:
     return 0
 
 
-def _serve(runtime, host: str, port: int, workers: int) -> int:
+def _serve(runtime, host: str, port: int, workers: int, replay=None) -> int:
     import uvicorn
 
     from signalhq.api.app import create_app
     from signalhq.queue.worker import WorkerPool
 
     pool = WorkerPool(runtime.ctx, workers) if workers else None
-    app = create_app(runtime, pool)
+    app = create_app(runtime, pool, replay)
     if pool:
         pool.start()
     try:
@@ -272,7 +272,7 @@ def cmd_demo(args: argparse.Namespace) -> int:
             drain(runtime.ctx, concurrency=args.workers, timeout_s=600)
         return 0
     print(f"dashboard: http://{args.host}:{args.port}")
-    return _serve(runtime, args.host, args.port, args.workers)
+    return _serve(runtime, args.host, args.port, args.workers, controller if args.replay else None)
 
 
 def cmd_stats(args: argparse.Namespace) -> int:

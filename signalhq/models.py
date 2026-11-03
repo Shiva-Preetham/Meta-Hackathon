@@ -46,6 +46,9 @@ class Account(Base):
 
 class FeedbackItem(Base):
     __tablename__ = "feedback_items"
+    # AUTOINCREMENT: ids are never reused after a replay reset, so a worker still holding
+    # an old item id can never write onto a new item that happens to get the same id.
+    __table_args__ = {"sqlite_autoincrement": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     source: Mapped[str] = mapped_column(String(32))
@@ -90,6 +93,7 @@ class Embedding(Base):
 
 class Theme(Base):
     __tablename__ = "themes"
+    __table_args__ = {"sqlite_autoincrement": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str | None] = mapped_column(String(200), nullable=True)
@@ -140,6 +144,7 @@ class Job(Base):
             unique=True,
             sqlite_where=text("state IN ('queued', 'running', 'failed')"),
         ),
+        {"sqlite_autoincrement": True},  # job ids are never reused (fencing relies on it)
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

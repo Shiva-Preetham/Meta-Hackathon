@@ -54,7 +54,7 @@ def _stem(word: str) -> str:
 def analyze(text: str) -> list[str]:
     tokens = [_stem(t) for t in _TOKEN.findall(text.lower())]
     tokens = [t for t in tokens if t and t not in _STOP and len(t) > 1]
-    return tokens + [f"{a}_{b}" for a, b in zip(tokens, tokens[1:])]
+    return tokens + [f"{a}_{b}" for a, b in zip(tokens, tokens[1:], strict=False)]
 
 
 class HashingEmbedder:

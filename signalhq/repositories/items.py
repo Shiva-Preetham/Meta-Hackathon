@@ -68,6 +68,9 @@ class ItemRepo:
     def get(self, item_id: int) -> FeedbackItem | None:
         return self.s.get(FeedbackItem, item_id)
 
+    def first(self, n: int) -> list[FeedbackItem]:
+        return list(self.s.execute(select(FeedbackItem).order_by(FeedbackItem.id).limit(n)).scalars())
+
     def count(self) -> int:
         return self.s.execute(select(func.count(FeedbackItem.id))).scalar_one()
 

@@ -66,9 +66,10 @@ def _safe_data_path(raw: str | None) -> Path:
     return path
 
 
-def create_app(runtime: Runtime, pool: WorkerPool | None = None) -> FastAPI:
+def create_app(runtime: Runtime, pool: WorkerPool | None = None, replay: ReplayController | None = None) -> FastAPI:
     db, settings = runtime.db, runtime.settings
-    replay = ReplayController(db, settings)
+    # Shared with the CLI when `demo --replay` started the replay, so Stop works on it.
+    replay = replay or ReplayController(db, settings)
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI) -> AsyncIterator[None]:

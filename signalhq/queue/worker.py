@@ -19,7 +19,6 @@ from datetime import datetime, timedelta
 
 from pydantic import ValidationError
 
-from signalhq.db import utcnow
 from signalhq.domain.states import InvalidTransition, ItemState, can_transition
 from signalhq.llm.errors import BudgetExceededError, PermanentError, TransientError
 from signalhq.pipeline.cluster import ClusterStage, ReclusterStage

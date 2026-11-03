@@ -52,9 +52,9 @@ def compute(s: Session, settings: Settings) -> dict[str, Any]:
         a_true = [label.product_area for label, _ in labelled]
         a_pred = [by_id[i][1].product_area for _, i in labelled]
         present = [t for t in FEEDBACK_TYPES if t in set(y_true) | set(y_pred)]
-        human["type_accuracy"] = sum(t == p for t, p in zip(y_true, y_pred)) / len(y_true)
+        human["type_accuracy"] = sum(t == p for t, p in zip(y_true, y_pred, strict=True)) / len(y_true)
         human["type_macro_f1"] = float(f1_score(y_true, y_pred, labels=present, average="macro", zero_division=0))
-        human["area_accuracy"] = sum(t == p for t, p in zip(a_true, a_pred)) / len(a_true)
+        human["area_accuracy"] = sum(t == p for t, p in zip(a_true, a_pred, strict=True)) / len(a_true)
         human["confusion_labels"] = present
         human["confusion"] = confusion_matrix(y_true, y_pred, labels=present).tolist()
         themed = [(label.theme_label.strip().lower(), assignments[i]) for label, i in labelled
