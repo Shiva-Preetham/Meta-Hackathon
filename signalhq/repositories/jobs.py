@@ -246,10 +246,14 @@ class JobRepo:
             out.setdefault(job_type, []).append((finished - started).total_seconds())
         return out
 
-    def done_window(self, job_type: str) -> tuple[int, datetime | None, datetime | None]:
-        row = self.s.execute(
-            select(func.count(), func.min(Job.created_at), func.max(Job.finished_at)).where(
-                Job.type == job_type, Job.state == JobState.DONE.value
+    def processing_span(self) -> tuple[int, datetime | None, datetime | None]:
+        """(items through the cluster stage, first enrich start, last cluster finish)."""
+        count, last = self.s.execute(
+            select(func.count(), func.max(Job.finished_at)).where(
+                Job.type == "cluster", Job.state == JobState.DONE.value
             )
         ).one()
-        return int(row[0]), row[1], row[2]
+        first = self.s.execute(
+            select(func.min(Job.started_at)).where(Job.type == "enrich", Job.started_at.is_not(None))
+        ).scalar_one()
+        return int(count), first, last

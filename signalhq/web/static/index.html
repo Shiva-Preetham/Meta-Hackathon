@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signal</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">
+        <h1>Signal</h1>
+        <span class="tag">What to fix next, ranked by revenue at risk</span>
+      </div>
+      <span id="mode" class="pill" title="Model used for enrichment"></span>
+      <span class="spacer"></span>
+      <div class="replay">
+        <span class="clock" id="clock" title="Data time: the scoring window ends here"></span>
+        <button class="btn primary" id="replay-start" type="button">Replay sample</button>
+        <button class="btn" id="replay-stop" type="button">Stop</button>
+      </div>
+    </div>
+    <div class="wrap"><p class="note" id="data-note" style="margin:0 0 10px"></p></div>
+  </header>
+
+  <main class="wrap">
+    <section class="kpis" aria-label="Key figures">
+      <div class="tile"><div class="label">Items processed</div><div class="value" id="kpi-items">–</div><div class="sub" id="kpi-items-sub"></div></div>
+      <div class="tile"><div class="label">Active themes</div><div class="value" id="kpi-themes">–</div><div class="sub" id="kpi-themes-sub"></div></div>
+      <div class="tile"><div class="label">Revenue at risk (simulated)</div><div class="value" id="kpi-rar">–</div><div class="sub" id="kpi-rar-sub"></div></div>
+      <div class="tile"><div class="label">Model cost so far</div><div class="value" id="kpi-cost">–</div><div class="sub" id="kpi-cost-sub"></div></div>
+    </section>
+
+    <div class="main">
+      <section class="card" aria-labelledby="themes-title">
+        <div class="card-head">
+          <h2 id="themes-title">Themes ranked by priority</h2>
+          <span class="spacer"></span>
+          <label class="note">Sort
+            <select id="sort">
+              <option value="score">Priority score</option>
+              <option value="revenue">Revenue at risk</option>
+              <option value="growth">Growth</option>
+              <option value="mentions">Recent mentions</option>
+              <option value="size">Total size</option>
+            </select>
+          </label>
+        </div>
+        <p class="hint">Score = log1p(revenue at risk) × √growth × severity × log1p(recent mentions). Select a theme to see why.</p>
+        <table class="themes">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Theme</th>
+              <th class="num">Score</th>
+              <th class="num">Revenue at risk</th>
+              <th class="num hide-sm">Mentions (recent / prev)</th>
+              <th class="num hide-sm">Growth</th>
+              <th class="hide-sm">Top severity</th>
+            </tr>
+          </thead>
+          <tbody id="themes-body"></tbody>
+        </table>
+        <div id="themes-empty" class="empty" hidden>No themes yet. Workers are processing, or no data is loaded.</div>
+      </section>
+
+      <section class="card detail" id="detail" aria-live="polite">
+        <p class="empty">Select a theme to see its evidence.</p>
+      </section>
+    </div>
+
+    <section class="card health" aria-labelledby="health-title">
+      <h2 id="health-title">Pipeline health</h2>
+      <div class="health-grid" id="health"></div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p id="footer-note"></p>
+    <p>Rankings come from a deterministic formula, never from the language model. API docs: <a href="/docs">/docs</a>. Labelling tool: <a href="/label">/label</a>.</p>
+  </footer>
+  <div class="tooltip" id="tooltip" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

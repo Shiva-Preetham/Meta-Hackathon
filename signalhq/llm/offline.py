@@ -151,8 +151,8 @@ def heuristic_theme_name(quotes: list[str], areas: list[str]) -> dict[str, str]:
     name = f"{area.capitalize()}: {phrase}"
     top_words = ", ".join(show(w) for w, _ in doc_words.most_common(4))
     summary = (
-        f"Offline heuristic summary: {len(quotes)} sampled quotes, mostly about {area}; "
-        f"frequent words: {top_words or 'none'}."
+        f"Customers mention {top_words or 'mixed issues'} ({len(quotes)} sampled quotes, mostly {area}). "
+        "Offline heuristic summary."
     )
     return {"name": name, "summary": summary}
 

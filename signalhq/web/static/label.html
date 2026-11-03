@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signal labelling</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    .label-main { max-width: 860px; margin: 16px auto; padding: 0 16px; }
+    .item-text { font-size: 17px; line-height: 1.5; white-space: pre-wrap; margin: 8px 0 4px; overflow-wrap: anywhere; }
+    .choices { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 14px; }
+    .choice { border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; background: var(--card); cursor: pointer; }
+    .choice kbd { font-family: ui-monospace, monospace; color: var(--muted); margin-right: 6px; }
+    .choice.on { border-color: var(--accent); background: var(--accent-wash); font-weight: 600; }
+    .row-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    #theme { flex: 1 1 260px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; }
+    .progress { height: 6px; background: var(--grid); border-radius: 3px; overflow: hidden; margin: 6px 0 12px; }
+    .progress div { height: 100%; background: var(--accent); }
+    .keys { color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header class="top"><div class="wrap">
+    <div class="brand"><h1>Signal</h1><span class="tag">Human labels for the evaluation</span></div>
+    <span class="spacer"></span><a href="/">Dashboard</a>
+  </div></header>
+  <main class="label-main">
+    <section class="card">
+      <div class="card-head"><h2>Label this item</h2><span class="spacer"></span><span class="note" id="count"></span></div>
+      <div class="progress"><div id="bar" style="width:0"></div></div>
+      <p class="hint">Your labels are the ground truth, so the model's own prediction is hidden here on purpose.</p>
+      <div id="source" class="note"></div>
+      <p class="item-text" id="text">Loading…</p>
+      <h3>Type <span class="keys">(keys 1–9)</span></h3>
+      <div class="choices" id="types"></div>
+      <h3>Product area <span class="keys">(keys a–m)</span></h3>
+      <div class="choices" id="areas"></div>
+      <h3>Theme label <span class="keys">(short free text, e.g. "downloads disappear"; press / to focus, Enter to save)</span></h3>
+      <div class="row-actions">
+        <input id="theme" list="theme-list" autocomplete="off" placeholder="What problem or request is this?">
+        <datalist id="theme-list"></datalist>
+        <button class="btn primary" id="save" type="button">Save and next (Enter)</button>
+      </div>
+      <p class="note" id="status" role="status"></p>
+    </section>
+  </main>
+  <script src="/static/label.js"></script>
+</body>
+</html>

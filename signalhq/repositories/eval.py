@@ -53,5 +53,8 @@ class EvalRepo:
         ).all()
         return [(label, item_id) for label, item_id in rows]
 
+    def theme_labels(self) -> list[str]:
+        return sorted(set(self.s.execute(select(EvalLabel.theme_label)).scalars()))
+
     def count(self) -> int:
         return len(self.labelled_hashes())
