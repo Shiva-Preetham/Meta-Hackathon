@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+**/__pycache__
+*.db
+*.db-wal
+*.db-shm
+data/raw
+data/audio
+eval
+docs
+tests
+.env
