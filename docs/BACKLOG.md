@@ -30,24 +30,24 @@ in this repository; "needs human" items are on the "Needs you" list in `PROGRESS
 | S2.1 | M | Embeddings + online clustering + re-cluster | Recovers planted themes (ARI reported); tau justified in an ADR | Done (hashing embedder; MiniLM not measured) |
 | S2.2 | M | Theme naming with change threshold | Renames only after growth | Done |
 | S2.3 | M | Deterministic scoring + unit tests | Edge cases in §6 covered | Done |
-| S2.4 | M | FastAPI read API + idempotent webhook | OpenAPI at `/docs` | To do |
-| S2.5 | S | Replay driver | Theme emerges during replay | Driver built; API controls to do |
-| S2.6 | S | Voice ingestion path | Speaker turns become `source=call` items | To do |
+| S2.4 | M | FastAPI read API + idempotent webhook | OpenAPI at `/docs` | Done |
+| S2.5 | S | Replay driver | Theme emerges during replay | Done (CLI, API and dashboard button) |
+| S2.6 | S | Voice ingestion path | Speaker turns become `source=call` items | Built and tested with a mock; needs recordings + key |
 
 ## Sprint 3: product surface + proof
 
 | ID | Tag | Story | Acceptance criteria | Status |
 |---|---|---|---|---|
-| S3.1 | M | Dashboard + Playwright screenshots | Clean at 1280 px and phone width | To do |
-| S3.2 | M | Eval tooling | Human labels, then `eval report` | To do |
+| S3.1 | M | Dashboard + Playwright screenshots | Clean at 1280 px and phone width | Done (`docs/screenshots/`) |
+| S3.2 | M | Eval tooling | Human labels, then `eval report` | Tooling done; labels need a human |
 | S3.3 | M | Real run (3,000-10,000 items) | Measured throughput, cost, latency | Waits for key + `twcs.csv` |
-| S3.4 | S | `/api/metrics` + pipeline health panel | Queue, dead jobs, p95, cache hit rate | To do |
-| S3.5 | C | Dockerfile + GitHub Actions tests | CI runs `pytest` | To do |
+| S3.4 | S | `/api/metrics` + pipeline health panel | Queue, dead jobs, p95, cache hit rate | Done |
+| S3.5 | C | Dockerfile + GitHub Actions tests | CI runs `pytest` | Written; Dockerfile not built here (no Docker daemon); CI runs on push |
 
 ## Sprint 4: submission pack
 
-README, ARCHITECTURE, DEMO_SCRIPT, SUBMISSION, RESUME drafts. Numbers are filled from
-`eval/report.md` once the real run and labels exist.
+README, ARCHITECTURE, DEMO_SCRIPT, SUBMISSION, RESUME drafted. Model numbers are marked
+"not yet measured" / [fill] until the real run and labels exist.
 
 ## Won't (future work)
 

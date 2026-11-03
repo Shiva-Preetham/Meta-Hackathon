@@ -72,3 +72,56 @@
   param dropping) and list it under "Needs you".
 - Change: tune clustering with a sweep script rather than by eye (done in S2.1).
 - Risk: the hashing embedder is weaker than MiniLM on paraphrases; measured, not assumed.
+
+- S2.1 Embeddings + clustering: hashing embedder (MiniLM optional; Hugging Face blocked here).
+  `scripts/tune_clustering.py` sweep on the synthetic set: quote+text alone peaks at ARI 0.668
+  (15-19 themes for 8 planted); adding the product-area anchor token gives mean ARI 0.977 across
+  four re-cluster cadences (worst 0.955) at tau 0.20 / link 0.10 / merge 0.70. Live pipeline:
+  ARI 0.987, 8/8 themes. Caveat recorded in ADR-005: heuristic and templates share vocabulary.
+- S2.2 Theme naming: names new themes, renames after 50% growth or a merge.
+- S2.3 Scoring: pure functions, 12 unit tests (zero revenue, new theme, ties, one huge account,
+  window edges).
+- S2.4 FastAPI: ranked themes, theme detail with filled-in formula and verbatim evidence, item
+  detail, summary, metrics, idempotent webhook (201 then 200), OpenAPI at /docs.
+- S2.5 Replay: driver (data-time clock in `kv`), CLI, API start/stop (files restricted to
+  `data/`), dashboard button. Measured on the synthetic replay (3 runs, default settings): the
+  planted spike theme appears after 10-12 of its 40 messages and ranks #1 after 12-15.
+  Data-hours depend on replay speed because the re-cluster delay is wall-clock time.
+- S2.6 Voice path: `ingest-audio` (ffmpeg conversion, gateway-cached transcription, one item
+  per speaker turn, `--transcript-json` to reuse a saved response). Tested with a generated WAV
+  and a mocked endpoint; no real call made.
+- S3.1 Dashboard (static, light theme): KPI row, ranked table with sparklines and "new" badges,
+  detail panel with "why ranked here", trend split into previous/recent windows, plan mix,
+  evidence; pipeline health. Playwright screenshots at 1280 px and 390 px; no horizontal scroll.
+- S3.2 Eval: stratified seeded sample, keyboard-first /label page (hides model predictions),
+  `eval report`. `eval/report-offline-synthetic.md` is the offline/synthetic run, labelled as such.
+- S3.3 Real run: blocked on key + `twcs.csv` (Needs you #2, #4, #7).
+- S3.4 Metrics endpoint + health panel: queue by state, stage p50/p95, throughput, cache hit
+  rate, dead jobs.
+- S3.5 Dockerfile + GitHub Actions (tests, offline demo, eval report on 3.11-3.13). The image was
+  not built here (no Docker daemon in the sandbox).
+- Bugs found in self-review and fixed: SQLite reused row ids after a replay reset, so a worker
+  still processing an old item could write onto a new item with the same id (fixed with
+  AUTOINCREMENT on items, jobs, themes + test); the dashboard Stop button could not stop a
+  replay started by `demo --replay` (one shared controller now).
+- Sprint 4: README, ARCHITECTURE (HLD, LLD, sequence, failure table), 7 ADRs, DEMO_SCRIPT,
+  SUBMISSION and RESUME drafts. Model numbers are "not yet measured" / [fill] everywhere.
+- Licence: MIT added (the repo must be public; change it if you prefer another licence).
+
+### Sprint 2–3 retrospective
+- Went well: measuring clustering with a sweep found the over-splitting quickly and gave a
+  defensible threshold instead of a guess.
+- Went well: Playwright screenshots caught a label collision on narrow charts.
+- Didn't: every model-quality number still waits on the real API; the offline numbers only show
+  that the plumbing works.
+- Change: the product-area anchor makes clustering depend on enrichment quality; watch theme
+  purity in the real eval and switch it off (`SIGNAL_EMBED_AREA_ANCHOR=0`) if it over-merges.
+- Change: replay timing knobs are wall-clock; for the video, keep the default 90 s replay.
+
+### Sprint 4 retrospective
+- Went well: one source of truth per number (eval report, ledger, scripts), so docs could be
+  written without inventing anything.
+- Didn't: the submission and resume drafts still have [fill] slots for the real numbers.
+- Change: after the real run, regenerate `eval/report.md`, then update README Results,
+  SUBMISSION and RESUME from it in one pass.
+
