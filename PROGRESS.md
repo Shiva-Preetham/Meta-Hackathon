@@ -124,4 +124,7 @@
 - Didn't: the submission and resume drafts still have [fill] slots for the real numbers.
 - Change: after the real run, regenerate `eval/report.md`, then update README Results,
   SUBMISSION and RESUME from it in one pass.
-
+- Final check (Nov 3): fresh clone + fresh virtualenv + `pip install -r requirements.txt` only,
+  no `MODEL_API_KEY`, no Kaggle data: `pytest` 120 passed (1 live test deselected),
+  `python -m signalhq demo --no-serve` processed the sample, `eval report` gave ARI 0.987 with
+  8 of 8 planted themes (synthetic, offline mode).

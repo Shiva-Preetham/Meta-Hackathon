@@ -2,8 +2,10 @@
 *.db
 *.db-wal
 *.db-shm
-data/raw/
-data/audio/
+data/raw/*
+!data/raw/.gitkeep
+data/audio/*
+!data/audio/.gitkeep
 eval/to_label.csv
 cache/
 out/
