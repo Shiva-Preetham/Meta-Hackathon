@@ -1,0 +1,13 @@
+.env
+*.db
+*.db-wal
+*.db-shm
+data/raw/
+data/audio/
+eval/to_label.csv
+cache/
+out/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
