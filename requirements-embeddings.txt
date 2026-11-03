@@ -1,0 +1,5 @@
+# Optional: the preferred local embedding model (sentence-transformers/all-MiniLM-L6-v2).
+# Pulls in PyTorch (large download). Without it Signal uses the deterministic hashing
+# embedder described in docs/adr/ADR-004-local-embeddings.md.
+-r requirements.txt
+sentence-transformers>=3.0

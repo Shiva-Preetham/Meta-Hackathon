@@ -11,3 +11,10 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+signal*.db
+eval/report.local.md
+docs/screenshots/*.tmp.png
+.ruff_cache/
+*.egg-info/
+build/
+dist/

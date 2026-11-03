@@ -1,0 +1,20 @@
+[project]
+name = "signalhq"
+version = "0.1.0"
+description = "Signal turns scattered customer feedback into a revenue-ranked list of what to fix next."
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+
+[tool.setuptools.packages.find]
+include = ["signalhq*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -m 'not live'"
+markers = [
+    "live: calls the real Meta Model API (needs MODEL_API_KEY); skipped by default",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:sklearn.*",
+]
