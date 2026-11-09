@@ -10,7 +10,7 @@ the numbers that are already measured (marked "measured").
   human labels], [cost $c per 1,000 items].
 - Designed a database-backed job queue with atomic claims, leases, fencing tokens,
   jittered retries and dead-lettering, plus an LLM gateway (cache, token-bucket rate limiter,
-  circuit breaker, schema validation with repair, cost ledger, budget cap); 119 automated
+  circuit breaker, schema validation with repair, cost ledger, budget cap); 128 automated
   tests, including crash recovery and no double processing across concurrent workers
   (measured).
 - Chose clustering thresholds with a reproducible sweep: 8 of 8 planted themes recovered on

@@ -71,6 +71,17 @@ shows queue depth, dead jobs and spend so far. Call recordings: `python -m signa
 call.m4a` (converted to 24 kHz mono WAV with ffmpeg, transcribed by Voice Transcribe, one item
 per speaker turn).
 
+## Troubleshooting
+
+| You see | What to do |
+|---|---|
+| Billing page: "No payment method on file" | Add a card under Billing. It is required even while you use the free credits, and the balance does not grow while credits last. |
+| `check` prints "Spark is not reachable with this key" | Follow the list it prints: payment method, then key, then model id (Models page), then network. |
+| Header says "Offline demo mode" | `MODEL_API_KEY` is not set in the shell that runs Signal. Export it and restart. |
+| "STOPPED: spend would exceed the $15.00 budget" | The budget cap worked. Check `python -m signalhq stats`, then raise `SIGNAL_BUDGET_USD` only if you mean to. |
+| Dead jobs in the health panel | `python -m signalhq stats` shows the errors; `python -m signalhq requeue-dead` retries them. |
+| `ingest --connector twcs` loads few items | Run `python scripts/probe_twcs.py` and pick a brand with more traffic via `--brand`. |
+
 ## How it works
 
 ```mermaid
@@ -138,7 +149,7 @@ Muse Spark's accuracy.
 | Planted spike reaches rank 1 in replay | after 12–15 of its 40 messages (3 runs) | `scripts/measure_replay.py` |
 | Re-ingesting the same file | 0 new rows | `tests/test_connectors.py` |
 | Concurrent workers, 60 jobs | each processed exactly once | `tests/test_queue.py` |
-| Test suite | 119 tests, no network, no key | `pytest` |
+| Test suite | 128 tests, no network, no key | `pytest` |
 
 The loudest planted theme (ads, 55 messages) comes almost entirely from free accounts, so it
 ranks below the smaller crash spike from paying accounts: the behaviour the score is designed for.

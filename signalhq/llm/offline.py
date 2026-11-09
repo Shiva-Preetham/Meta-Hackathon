@@ -142,14 +142,19 @@ def heuristic_theme_name(quotes: list[str], areas: list[str]) -> dict[str, str]:
         return surface[stem].most_common(1)[0][0]
 
     area = (areas[0] if areas else "other").replace("_", " ")
-    bigram = next(((a, b) for (a, b), n in doc_bigrams.most_common() if n >= 2), None)
+    # The name already starts with the area, so words that repeat it ("Podcasts: podcast
+    # layout") add nothing; describe the problem with the remaining words.
+    area_stems = {_stem(w) for w in area.split()}
+    words = [(w, n) for w, n in doc_words.most_common() if w not in area_stems]
+    bigrams = [(b, n) for b, n in doc_bigrams.most_common() if not set(b) & area_stems]
+    bigram = next((b for b, n in bigrams if n >= 2), None)
     if bigram:
         phrase = f"{show(bigram[0])} {show(bigram[1])}"
     else:
-        top = [show(w) for w, _ in doc_words.most_common(2)]
+        top = [show(w) for w, _ in words[:2]]
         phrase = " and ".join(top) if top else "mixed feedback"
     name = f"{area.capitalize()}: {phrase}"
-    top_words = ", ".join(show(w) for w, _ in doc_words.most_common(4))
+    top_words = ", ".join(show(w) for w, _ in words[:4])
     summary = (
         f"Customers mention {top_words or 'mixed issues'} ({len(quotes)} sampled quotes, mostly {area}). "
         "Offline heuristic summary."

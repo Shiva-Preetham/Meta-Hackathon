@@ -242,3 +242,14 @@ def test_transport_maps_http_errors(status, error):
         _transport_with(handler).complete(REQ, 5)
     if status == 429:
         assert info.value.retry_after == 3.0
+
+
+def test_offline_theme_name_does_not_repeat_the_area():
+    from signalhq.llm.offline import heuristic_theme_name
+
+    quotes = ["Podcast episodes play out of order", "Podcast episodes are out of order again",
+              "The podcast episode list is in the wrong order"]
+    out = heuristic_theme_name(quotes, ["podcasts"])
+    assert out["name"].startswith("Podcasts: ")
+    assert "podcast" not in out["name"].split(":", 1)[1].lower()
+    assert "order" in out["name"].lower()

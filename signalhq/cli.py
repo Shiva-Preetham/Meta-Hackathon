@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import logging
 import sys
@@ -13,6 +14,11 @@ from signalhq.config import Settings, get_settings
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = ROOT / "data" / "sample" / "feedback_sample.jsonl"
+CHECK_HINTS = """Spark is not reachable with this key. Things to check, most likely first:
+  1. Billing page shows "No payment method on file": add a card (needed even with free credits).
+  2. The key is wrong or was revoked: create a new one under API keys and export MODEL_API_KEY again.
+  3. The model id is different: compare SIGNAL_SPARK_MODEL with the Models page.
+  4. This machine cannot reach api.meta.ai (proxy or firewall)."""
 OFFLINE_BANNER = (
     "OFFLINE DEMO MODE: no MODEL_API_KEY is set, so enrichment and theme names come from a "
     "keyword heuristic (model id offline-heuristic-v1), not Muse Spark."
@@ -56,7 +62,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         models = gateway.transport.list_models()
     except Exception as exc:  # noqa: BLE001 - report any failure to the human
         print(f"models.list failed: {type(exc).__name__}: {exc}")
-        print("Spark looks unreachable. Likely cause: no credit card on the Meta Model API account.")
+        print(CHECK_HINTS)
         return 1
     print(f"models available ({len(models)}): {', '.join(models)}")
     missing = [m for m in (settings.spark_model, settings.voice_model) if m not in models]
@@ -83,6 +89,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         )
     except Exception as exc:  # noqa: BLE001
         print(f"strict-JSON Spark call failed: {type(exc).__name__}: {exc}")
+        print(CHECK_HINTS)
         return 1
     elapsed = (time.monotonic() - started) * 1000
     cost = gateway.spent_usd() - before
@@ -112,7 +119,8 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     connector = get_connector(args.connector, brand=args.brand, limit=args.limit)
     raws = connector.read(Path(args.file))
     if args.limit and args.connector != "twcs":
-        raws = (r for i, r in enumerate(raws) if i < args.limit)
+        # Stop reading as soon as the limit is reached (twcs applies its own limit).
+        raws = itertools.islice(raws, args.limit)
     result = ingest(db, settings, raws)
     print(f"ingested {result.created} new items, skipped {result.duplicates} duplicates")
     return 0
