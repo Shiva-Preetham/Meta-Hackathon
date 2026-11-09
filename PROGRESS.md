@@ -128,3 +128,6 @@
   no `MODEL_API_KEY`, no Kaggle data: `pytest` 120 passed (1 live test deselected),
   `python -m signalhq demo --no-serve` processed the sample, `eval report` gave ARI 0.987 with
   8 of 8 planted themes (synthetic, offline mode).
+- Nov 9 follow-ups: offline theme names no longer repeat the area; `ingest --limit` stops
+  reading early; `check` lists likely causes when Spark fails (no payment method first);
+  README troubleshooting table; first CLI tests and webhook/data-note tests. 128 tests pass.

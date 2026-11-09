@@ -149,7 +149,7 @@ Muse Spark's accuracy.
 | Planted spike reaches rank 1 in replay | after 12–15 of its 40 messages (3 runs) | `scripts/measure_replay.py` |
 | Re-ingesting the same file | 0 new rows | `tests/test_connectors.py` |
 | Concurrent workers, 60 jobs | each processed exactly once | `tests/test_queue.py` |
-| Test suite | 119 tests, no network, no key | `pytest` |
+| Test suite | 128 tests, no network, no key | `pytest` |
 
 The loudest planted theme (ads, 55 messages) comes almost entirely from free accounts, so it
 ranks below the smaller crash spike from paying accounts: the behaviour the score is designed for.
