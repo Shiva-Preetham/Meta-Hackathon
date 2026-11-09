@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import logging
 import sys
@@ -112,7 +113,8 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     connector = get_connector(args.connector, brand=args.brand, limit=args.limit)
     raws = connector.read(Path(args.file))
     if args.limit and args.connector != "twcs":
-        raws = (r for i, r in enumerate(raws) if i < args.limit)
+        # Stop reading as soon as the limit is reached (twcs applies its own limit).
+        raws = itertools.islice(raws, args.limit)
     result = ingest(db, settings, raws)
     print(f"ingested {result.created} new items, skipped {result.duplicates} duplicates")
     return 0
