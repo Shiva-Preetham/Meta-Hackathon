@@ -2,8 +2,19 @@
 
 import json
 
+import pytest
+
 from signalhq.cli import main
+from signalhq.config import get_settings
 from tests.conftest import SAMPLE
+
+
+@pytest.fixture(autouse=True)
+def fresh_settings():
+    """Settings are cached per process; each test reads the environment it sets up."""
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
 
 
 def run(capsys, db, *args) -> tuple[int, str]:
@@ -36,3 +47,19 @@ def test_check_without_key_says_unverified(tmp_path, capsys, monkeypatch):
     code, out = run(capsys, tmp_path / "cli.db", "check")
     assert code == 2
     assert "NOT VERIFIED" in out
+
+
+def test_check_failure_prints_hints(tmp_path, capsys, monkeypatch):
+    """A failing model listing (e.g. no payment method on the account) explains what to fix."""
+    from signalhq.llm.errors import PermanentError
+    from signalhq.llm.transport import OpenAICompatTransport
+
+    def refuse(self):
+        raise PermanentError("HTTP 403: payment required")
+
+    monkeypatch.setenv("MODEL_API_KEY", "test-key")
+    monkeypatch.setattr(OpenAICompatTransport, "list_models", refuse)
+    code = main(["--db", str(tmp_path / "cli.db"), "check"])
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "No payment method on file" in out and "API keys" in out
